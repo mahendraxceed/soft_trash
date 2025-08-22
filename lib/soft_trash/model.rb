@@ -37,26 +37,13 @@ module SoftTrash
 
 
       #
-      #   Person.where(age: 0..18).undiscard_all
+      #   Person.where(age: 0..18).restore_all
       def restore_all
         deleted.each(&:restore)
       end
 
-      # Undiscards the records by instantiating each
-      # record and calling its {#undiscard!} method.
-      # Each object's callbacks are executed.
-      # Returns the collection of objects that were undiscarded.
-      #
-      # Note: Instantiation, callback execution, and update of each
-      # record can be time consuming when you're undiscarding many records at
-      # once. It generates at least one SQL +UPDATE+ query per record (or
-      # possibly more, to enforce your callbacks). If you want to undiscard many
-      # rows quickly, without concern for their associations or callbacks, use
-      # #update_all!(discarded_at: nil) instead.
-      #
-      # ==== Examples
-      #
-      #   Person.where(age: 0..18).undiscard_all!
+
+      #   Person.where(age: 0..18).restore_all!
       def restore_all!
         deleted.each(&:restore!)
       end
@@ -82,14 +69,6 @@ module SoftTrash
       end
     end
 
-    # Discard the record in the database
-    #
-    # There's a series of callbacks associated with #discard!. If the
-    # <tt>before_discard</tt> callback throws +:abort+ the action is cancelled
-    # and #discard! raises {Discard::RecordNotDiscarded}.
-    #
-    # @return [Boolean] true if successful
-    # @raise {Discard::RecordNotDiscarded}
     def trash!
       trash || _raise_record_not_trashed
     end
